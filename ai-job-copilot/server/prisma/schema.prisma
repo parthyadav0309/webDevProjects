@@ -1,0 +1,136 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum ApplicationStatus {
+  SAVED
+  APPLIED
+  SCREENING
+  INTERVIEW
+  OFFER
+  REJECTED
+  WITHDRAWN
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  resumes     Resume[]
+  jobs        Job[]
+  applications Application[]
+  interviews  Interview[]
+
+  @@index([email])
+}
+
+model Resume {
+  id            String   @id @default(uuid())
+  userId        String
+
+  name          String
+  fileName      String?
+  fileUrl       String?
+  extractedText String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  applications Application[]
+
+  @@index([userId])
+}
+
+model Job {
+  id          String   @id @default(uuid())
+  userId      String
+
+  title       String
+  company     String
+  location    String?
+  description String
+  sourceUrl   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  applications Application[]
+  analyses     AIAnalysis[]
+
+  @@index([userId])
+  @@index([company])
+}
+
+model Application {
+  id       String @id @default(uuid())
+  userId   String
+  jobId    String
+  resumeId String?
+
+  status ApplicationStatus @default(SAVED)
+
+  appliedAt    DateTime?
+  interviewAt  DateTime?
+  notes        String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  job    Job     @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  resume Resume? @relation(fields: [resumeId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([jobId])
+  @@index([status])
+}
+
+model Interview {
+  id     String @id @default(uuid())
+  userId String
+  jobId  String
+
+  scheduledAt DateTime?
+  type        String?
+  notes       String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([jobId])
+}
+
+model AIAnalysis {
+  id       String @id @default(uuid())
+  jobId    String
+  resumeId String?
+
+  matchScore Int?
+
+  result Json
+
+  createdAt DateTime @default(now())
+
+  job Job @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@index([jobId])
+}
