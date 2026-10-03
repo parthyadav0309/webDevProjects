@@ -30,17 +30,17 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  resumes     Resume[]
-  jobs        Job[]
+  resumes      Resume[]
+  jobs         Job[]
   applications Application[]
-  interviews  Interview[]
+  interviews   Interview[]
 
   @@index([email])
 }
 
 model Resume {
-  id            String   @id @default(uuid())
-  userId        String
+  id     String @id @default(uuid())
+  userId String
 
   name          String
   fileName      String?
@@ -57,8 +57,8 @@ model Resume {
 }
 
 model Job {
-  id          String   @id @default(uuid())
-  userId      String
+  id     String @id @default(uuid())
+  userId String
 
   title       String
   company     String
@@ -72,23 +72,23 @@ model Job {
   user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   applications Application[]
   analyses     AIAnalysis[]
-  interviews Interview[]
+  interviews   Interview[]
 
   @@index([userId])
   @@index([company])
 }
 
 model Application {
-  id       String @id @default(uuid())
+  id       String  @id @default(uuid())
   userId   String
   jobId    String
   resumeId String?
 
   status ApplicationStatus @default(SAVED)
 
-  appliedAt    DateTime?
-  interviewAt  DateTime?
-  notes        String?
+  appliedAt   DateTime?
+  interviewAt DateTime?
+  notes       String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -122,7 +122,7 @@ model Interview {
 }
 
 model AIAnalysis {
-  id       String @id @default(uuid())
+  id       String  @id @default(uuid())
   jobId    String
   resumeId String?
 

@@ -6,6 +6,8 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 
 import prisma from "./config/prisma.js";
+import router from "./routes/auth.routes.js";
+import resumeRoutes from "./routes/resume.routes.js"
 
 dotenv.config();
 
@@ -50,3 +52,7 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+app.use("/api/auth",router);
+app.use("/api/resumes", resumeRoutes);
+app.use("/uploads", express.static("uploads"));

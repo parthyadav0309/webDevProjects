@@ -1,10 +1,12 @@
-import prisma from "../config/prisma";
-import { generateToken } from "./auth.controller";
+import prisma from "../config/prisma.js";
+import { generateToken } from "./auth.controller.js";
+import bcrypt from "bcryptjs";
 
 export const login = async (req,res) =>{
 
     try{
         const {email,password} =req.body;
+        console.log("Login request body:", req.body);
 
         if(!email || !password){
             return res.status(400).json({
@@ -18,6 +20,7 @@ export const login = async (req,res) =>{
                 email,
             },
         });
+        
 
         if(!user){
             return res.status(401).json({
@@ -27,9 +30,9 @@ export const login = async (req,res) =>{
         }
 
         const hashedPass = user.password;
-
+       
         const passMatch = await bcrypt.compare(password,hashedPass);
-
+        
         if(!passMatch){
             return res.status(401).json({
                 success: false,
@@ -38,7 +41,7 @@ export const login = async (req,res) =>{
         }
 
         const token = generateToken(user.id);
-
+        
         res.cookie("token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
@@ -46,15 +49,15 @@ export const login = async (req,res) =>{
             maxAge: 7 * 24 * 60 * 60 * 1000,
             });
 
-    res.json({
-      success: true,
-      message: "Login successful",
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      },
+        res.json({
+        success: true,
+        message: "Login successful",
+        user: {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+        },
     });
 
 

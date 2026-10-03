@@ -44,6 +44,7 @@ export const register = async (req, res) => {
     });
 
     const token = generateToken(user.id);
+    console.log("Generated token:", token);
 
     res.cookie("token", token, {
       httpOnly: true,
