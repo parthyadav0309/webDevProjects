@@ -10,6 +10,6 @@ const router = express.Router();
 
 router.post("/", protect, upload.single("resume"), uploadResume);
 router.get("/", protect, getMyResumes);
-router.delete("/:id", protect, deleteResume);
+router.delete("/", protect, deleteResume);
 
 export default router;

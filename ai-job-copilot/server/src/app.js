@@ -8,6 +8,7 @@ import dotenv from "dotenv";
 import prisma from "./config/prisma.js";
 import router from "./routes/auth.routes.js";
 import resumeRoutes from "./routes/resume.routes.js"
+import jobRoutes from "./routes/job.routes.js"
 
 dotenv.config();
 
@@ -56,3 +57,4 @@ app.listen(PORT, () => {
 app.use("/api/auth",router);
 app.use("/api/resumes", resumeRoutes);
 app.use("/uploads", express.static("uploads"));
+app.use("/api/jobs",jobRoutes);

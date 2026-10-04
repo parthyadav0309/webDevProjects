@@ -95,6 +95,13 @@ export const getMyResumes = async (req, res) => {
       },
     });
 
+    if(resumes.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No resumes found for the user",
+      });
+    }
+
     res.json({
       success: true,
       resumes,
@@ -112,9 +119,10 @@ export const getMyResumes = async (req, res) => {
 //////
 
 export const deleteResume = async (req, res) => {
+  console.log("HERE");
   try {
-    const { id } = req.params;
-
+    const { id } = req.query;
+    console.log("Deleting resume with ID:", id, "for user ID:", req.userId);
     const resume = await prisma.resume.findFirst({
       where: {
         id,
