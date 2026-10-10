@@ -7,6 +7,6 @@ import { analysisIdValidation, analyzeAppApplicationValadation, jobIdValidation 
 const router = express.Router();
 
 router.post("/analyze",  protect,  analyzeAppApplicationValadation,  validate,  analyzeJobApplication,);
-router.get("/analyses/:id",protect,analysisIdValidation,validate,getAiAnalysisById); // analysis id
+router.get("/analysis/:id",protect,analysisIdValidation,validate,getAiAnalysisById); // analysis id
 router.get("/job/:jobId", protect, jobIdValidation, validate, getAnalysesByJob); //job id
 export default router;
