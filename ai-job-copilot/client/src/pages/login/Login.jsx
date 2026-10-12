@@ -1,12 +1,13 @@
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { postLogin } from "../../api/loginApi";
 
-const API_URL = "http://localhost:5000/api";
 
 export default function Login() {
   const navigate = useNavigate();
-
+  const location = useLocation();
+  const message = location.state?.message;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -18,14 +19,15 @@ export default function Login() {
     setLoading(true);
 
     try {
-      await axios.post(
-        `${API_URL}/auth/login`,
-        { email, password },
-        { withCredentials: true },
-      );
-
-      // Use the analysis ID saved in your database.
-      navigate("/ai-analysis/779565df-fe43-48a4-abce-dab34aff9adf");
+      const result = await postLogin(email,password);
+      // console.log(result);
+      if(result){
+        navigate(location.state?.from?.pathname || "/dashboard", {
+          replace: true,
+        });
+      }
+      
+      
     } catch (err) {
       setError(
         err.response?.data?.message || "Login failed. Check your credentials.",
@@ -46,6 +48,11 @@ export default function Login() {
         <p className="mt-2 mb-6 text-slate-500">
           Sign in to view your resume analysis.
         </p>
+        {message && (
+          <div className="mb-4 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-700">
+            {message}
+          </div>
+        )}
 
         <label className="mb-2 block text-sm font-medium">Email</label>
 

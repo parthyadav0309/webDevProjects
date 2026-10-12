@@ -1,17 +1,32 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-
-import Login from "./pages/Login";
-import AIAnalysis from "./pages/AIAnalysis";
+import Login from "./pages/login/Login";
+import Dashboard from "./pages/dashboard/Dashboard";
+import AIAnalysis from "./pages/AiAnalysis/AIAnalysis";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
-
-        <Route path="/ai-analysis/:id" element={<AIAnalysis />} />
-
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/ai/analysis/:id"
+          element={
+            <ProtectedRoute>
+              <AIAnalysis />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>
   );
