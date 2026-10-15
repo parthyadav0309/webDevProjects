@@ -8,7 +8,7 @@ import upload from "../middleware/upload.middleware.js";
 
 const router = express.Router();
 
-router.post("/", protect, upload.single("resume"), uploadResume);
+router.post("/upload", protect, upload.single("resume"), uploadResume);
 router.get("/", protect, getMyResumes);
 router.delete("/", protect, deleteResume);
 

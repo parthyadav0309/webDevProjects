@@ -78,7 +78,7 @@ export default function Dashboard() {
           setJobs(getList(jobsResult.value));
         }
 
-        if (resumesResult.status === "fulfilled") {
+        if (resumesResult.status === "fulfilled") { //empty resume shows ssome eerror to be fixed
           setResumes(getList(resumesResult.value));
         }
 
@@ -150,7 +150,7 @@ export default function Dashboard() {
             Jobs
           </Link>
           <Link
-            to="/dashboard"
+            to="/resumes"
             className="block rounded-xl px-4 py-3 text-sm text-slate-600 hover:bg-slate-100"
           >
             Resumes

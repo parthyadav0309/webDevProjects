@@ -3,6 +3,7 @@ import Login from "./pages/login/Login";
 import Dashboard from "./pages/dashboard/Dashboard";
 import AIAnalysis from "./pages/AiAnalysis/AIAnalysis";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Resumes from "./pages/resume/Resumes";
 
 function App() {
   return (
@@ -25,6 +26,15 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path = "/resumes"
+          element={
+            <ProtectedRoute>
+              <Resumes/>
+            </ProtectedRoute>
+          }
+          />
+       
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>

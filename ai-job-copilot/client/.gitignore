@@ -22,6 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
+.env
 
 #to do dashboard -> if not login should redirect to login page
