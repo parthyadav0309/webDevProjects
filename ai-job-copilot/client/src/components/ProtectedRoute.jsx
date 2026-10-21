@@ -44,13 +44,14 @@ export default function ProtectedRoute({children}){
     }
 
     if (status === "unauthenticated") {
+        console.log();
         return (
           <Navigate
             to="/login"
             replace
             state={{
               from: location,
-              message: "You must log in to view the dashboard.",
+              message: `You must log in to view the ${location.pathname.slice(1)}.`,
             }}
           />
         );

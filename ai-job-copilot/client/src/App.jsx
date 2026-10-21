@@ -4,6 +4,8 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import AIAnalysis from "./pages/AiAnalysis/AIAnalysis";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Resumes from "./pages/resume/Resumes";
+import jobs from "./pages/jobs/Jobs";
+import Jobs from "./pages/jobs/Jobs";
 
 function App() {
   return (
@@ -34,6 +36,14 @@ function App() {
             </ProtectedRoute>
           }
           />
+        <Route
+          path = "/jobs"
+          element={
+            <ProtectedRoute>
+              <Jobs/>
+            </ProtectedRoute>
+          }
+        />
        
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />

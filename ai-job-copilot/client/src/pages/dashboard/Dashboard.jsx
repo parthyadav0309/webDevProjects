@@ -61,7 +61,7 @@ export default function Dashboard() {
           (result) =>
             result.status === "rejected" &&
             result.reason?.response?.status === 401,
-        );
+        );  
 
         if (failed) {
           navigate("/login", { replace: true });
@@ -69,7 +69,7 @@ export default function Dashboard() {
         }
 
         const errors = results.filter((result) => result.status === "rejected");
-
+        // console.log(errors);
         if (errors.length === results.length) {
           throw new Error("Could not load dashboard data. Please try again.");
         }
@@ -87,7 +87,7 @@ export default function Dashboard() {
         }
 
         if (errors.length > 0) {
-          setError(
+          console.log(
             "Some dashboard sections could not load. Check that all three GET endpoints are available.",
           );
         }
@@ -144,7 +144,7 @@ export default function Dashboard() {
             Dashboard
           </Link>
           <Link
-            to="/dashboard"
+            to="/jobs"
             className="block rounded-xl px-4 py-3 text-sm text-slate-600 hover:bg-slate-100"
           >
             Jobs
