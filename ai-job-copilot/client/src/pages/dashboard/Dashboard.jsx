@@ -301,7 +301,7 @@ export default function Dashboard() {
           </div>
         </section>
 
-        <section className="mt-8 rounded-2xl bg-gradient-to-r from-blue-700 to-indigo-700 p-8 text-white shadow-sm">
+        <section className="mt-8 rounded-2xl bg-linear-to-r from-blue-700 to-indigo-700 p-8 text-white shadow-sm">
           <p className="text-sm font-medium text-blue-100">
             AI-powered career insights
           </p>
