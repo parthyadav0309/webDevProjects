@@ -6,6 +6,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Resumes from "./pages/resume/Resumes";
 import jobs from "./pages/jobs/Jobs";
 import Jobs from "./pages/jobs/Jobs";
+import AnalyzeResume from "./pages/AnalyzeResume/AnalyzeResume";
 
 function App() {
   return (
@@ -29,22 +30,31 @@ function App() {
           }
         />
         <Route
-          path = "/resumes"
+          path="/resumes"
           element={
             <ProtectedRoute>
-              <Resumes/>
-            </ProtectedRoute>
-          }
-          />
-        <Route
-          path = "/jobs"
-          element={
-            <ProtectedRoute>
-              <Jobs/>
+              <Resumes />
             </ProtectedRoute>
           }
         />
-       
+        <Route
+          path="/jobs"
+          element={
+            <ProtectedRoute>
+              <Jobs />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/analyze-resume"
+          element={
+            <ProtectedRoute>
+              <AnalyzeResume />
+            </ProtectedRoute>
+          }
+        />
+
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
