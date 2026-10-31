@@ -73,7 +73,7 @@ export default function AnalyzeResume() {
           setAnalyzing(true);
 
           const response = await analyzeResume(jobId, resumeId);
-
+          // console.log("AI analysis response:", response);
           // Support common response shapes from the backend.
           const analysis =
             response?.analysis ||
@@ -83,9 +83,10 @@ export default function AnalyzeResume() {
 
           const analysisId =
             analysis?.id || response?.analysisId || response?.data?.analysisId;
-
+            
+          console.log(analysisId);
           if (analysisId) {
-            navigate(`/ai-analysis/${analysisId}`);
+            navigate(`/ai/analysis/${analysisId}`);
           } else {
             setError(
               "The analysis request completed, but the response did not contain an analysis ID. Check your POST /api/ai/analyze response.",

@@ -4,9 +4,9 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import AIAnalysis from "./pages/AiAnalysis/AIAnalysis";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Resumes from "./pages/resume/Resumes";
-import jobs from "./pages/jobs/Jobs";
 import Jobs from "./pages/jobs/Jobs";
 import AnalyzeResume from "./pages/AnalyzeResume/AnalyzeResume";
+import Applications from "./pages/Application/Applications";
 
 function App() {
   return (
@@ -51,6 +51,15 @@ function App() {
           element={
             <ProtectedRoute>
               <AnalyzeResume />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/applications"
+          element={
+            <ProtectedRoute>
+              <Applications/>
             </ProtectedRoute>
           }
         />

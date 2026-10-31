@@ -156,7 +156,7 @@ export default function Dashboard() {
             Resumes
           </Link>
           <Link
-            to="/dashboard"
+            to="/applications"
             className="block rounded-xl px-4 py-3 text-sm text-slate-600 hover:bg-slate-100"
           >
             Applications
