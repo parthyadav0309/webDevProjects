@@ -7,6 +7,8 @@ import Resumes from "./pages/resume/Resumes";
 import Jobs from "./pages/jobs/Jobs";
 import AnalyzeResume from "./pages/AnalyzeResume/AnalyzeResume";
 import Applications from "./pages/Application/Applications";
+import Analytics from "./pages/Analytics/Analytics";
+
 
 function App() {
   return (
@@ -59,7 +61,16 @@ function App() {
           path="/applications"
           element={
             <ProtectedRoute>
-              <Applications/>
+              <Applications />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/analytics"
+          element={
+            <ProtectedRoute>
+              <Analytics />
             </ProtectedRoute>
           }
         />
