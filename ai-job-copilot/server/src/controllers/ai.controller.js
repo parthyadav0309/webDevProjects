@@ -155,3 +155,34 @@ export const getAnalysesByJob = async (req, res) => {
     });
   }
 };
+
+//API to fetch all analyses for the logged-in user
+export const getUserAnalyses = async (req, res) => {
+  try {
+    const analyses = await prisma.aIAnalysis.findMany({
+      where: {
+        job: {
+          userId: req.userId,
+        },
+      },
+      include: {
+        job: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    return res.status(200).json({
+      success: true,
+      analyses,
+    });
+  } catch (error) {
+    console.error("Get user analyses error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch AI analyses",
+    });
+  }
+};

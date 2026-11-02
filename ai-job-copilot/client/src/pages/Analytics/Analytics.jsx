@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { getApplications } from "../../api/applicationApi";
+import { getAIAnalysesLoggedInUser } from "../../api/aiApi";
 
 const STATUS_COLORS = {
   SAVED: "bg-gray-400",
@@ -39,12 +40,19 @@ export default function Analytics() {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [analyses,setAnalyses] = useState([]);
 
   useEffect(() => {
     const loadAnalytics = async () => {
-      try {
-        const response = await getApplications();
-        setApplications(getApplicationsData(response));
+      try {    
+
+        const [applicationResponse, analysesResponse] = await Promise.all([
+          getApplications(),
+          getAIAnalysesLoggedInUser()
+        ])
+        setApplications(getApplicationsData(applicationResponse));
+        setAnalyses(analysesResponse);
+
       } catch (err) {
         console.error("Analytics error:", err);
         setError(err.response?.data?.message || "Failed to load analytics.");
@@ -128,6 +136,57 @@ export default function Analytics() {
       .sort((a, b) => new Date(a.interviewAt) - new Date(b.interviewAt));
   }, [applications]);
 
+  const aiStats = useMemo(() => {
+    const scores = analyses
+      .map((analysis) =>
+        Number(analysis.matchScore ?? analysis.result?.matchScore),
+      )
+      .filter((score) => Number.isFinite(score));
+
+    const averageScore = scores.length
+      ? Math.round(
+          scores.reduce((total, score) => total + score, 0) / scores.length,
+        )
+      : 0;
+
+    const bestMatches = [...analyses]
+      .sort(
+        (a, b) =>
+          Number(b.matchScore ?? b.result?.matchScore ?? 0) -
+          Number(a.matchScore ?? a.result?.matchScore ?? 0),
+      )
+      .slice(0, 5);
+
+    const skillCounts = {};
+
+    analyses.forEach((analysis) => {
+      const missingSkills = analysis.result?.missingSkills || [];
+
+      missingSkills.forEach((item) => {
+        const skill =
+          typeof item === "string"
+            ? item
+            : item.skill || item.name || item.title;
+
+        if (skill) {
+          const key = skill.trim();
+          skillCounts[key] = (skillCounts[key] || 0) + 1;
+        }
+      });
+    });
+
+    const topMissingSkills = Object.entries(skillCounts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5);
+
+    return {
+      averageScore,
+      totalAnalyses: analyses.length,
+      bestMatches,
+      topMissingSkills,
+    };
+  }, [analyses]);
+
   const maxMonthlyCount = Math.max(
     ...monthlyData.map((month) => month.count),
     1,
@@ -194,6 +253,105 @@ export default function Analytics() {
               </p>
             </div>
           ))}
+        </div>
+
+        {/* AI Analysis Summary */}
+        <div className="mt-8 grid gap-5 sm:grid-cols-2">
+          <div className="rounded-xl bg-white p-6 shadow-sm">
+            <p className="text-sm text-gray-500">Average AI Match Score</p>
+
+            <p className="mt-3 text-3xl font-bold text-indigo-600">
+              {aiStats.averageScore}%
+            </p>
+
+            <p className="mt-2 text-sm text-gray-500">
+              Based on {aiStats.totalAnalyses} AI analyses
+            </p>
+          </div>
+
+          <div className="rounded-xl bg-white p-6 shadow-sm">
+            <p className="text-sm text-gray-500">Total AI Analyses</p>
+
+            <p className="mt-3 text-3xl font-bold text-gray-900">
+              {aiStats.totalAnalyses}
+            </p>
+
+            <p className="mt-2 text-sm text-gray-500">
+              Resume and job compatibility checks
+            </p>
+          </div>
+        </div>
+
+        {/* Best-Matched Jobs */}
+
+        <div className="mt-8 rounded-xl bg-white p-6 shadow-sm">
+          <h2 className="text-lg font-semibold text-gray-900">
+            Best-Matched Jobs
+          </h2>
+
+          {aiStats.bestMatches.length === 0 ? (
+            <p className="mt-4 text-sm text-gray-500">
+              No AI analyses available yet.
+            </p>
+          ) : (
+            <div className="mt-5 space-y-4">
+              {aiStats.bestMatches.map((analysis) => {
+                const score = Number(
+                  analysis.matchScore ?? analysis.result?.matchScore ?? 0,
+                );
+
+                return (
+                  <div
+                    key={analysis.id}
+                    className="flex items-center justify-between gap-4 border-b border-gray-100 pb-4"
+                  >
+                    <div>
+                      <p className="font-semibold text-gray-900">
+                        {analysis.job?.title || "Unknown Job"}
+                      </p>
+
+                      <p className="text-sm text-gray-500">
+                        {analysis.job?.company || "Unknown Company"}
+                      </p>
+                    </div>
+
+                    <span className="rounded-lg bg-green-50 px-3 py-2 font-semibold text-green-700">
+                      {score}%
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Most Frequently Missing Skills */}
+
+        <div className="mt-8 rounded-xl bg-white p-6 shadow-sm">
+          <h2 className="text-lg font-semibold text-gray-900">
+            Skill Gap Insights
+          </h2>
+
+          {aiStats.topMissingSkills.length === 0 ? (
+            <p className="mt-4 text-sm text-gray-500">
+              No missing skill information available.
+            </p>
+          ) : (
+            <div className="mt-5 space-y-4">
+              {aiStats.topMissingSkills.map(([skill, count]) => (
+                <div key={skill} className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-gray-700">
+                    {skill}
+                  </span>
+
+                  <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-semibold text-orange-700">
+                    Missing in {count} analysis
+                    {count > 1 ? "es" : ""}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Status and Success Rate */}

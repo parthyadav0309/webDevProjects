@@ -8,6 +8,7 @@ import Jobs from "./pages/jobs/Jobs";
 import AnalyzeResume from "./pages/AnalyzeResume/AnalyzeResume";
 import Applications from "./pages/Application/Applications";
 import Analytics from "./pages/Analytics/Analytics";
+import Register from "./pages/Register/Register";
 
 
 function App() {
@@ -75,6 +76,7 @@ function App() {
           }
         />
 
+        <Route path="/register" element={<Register/>} />
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>

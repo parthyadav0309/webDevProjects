@@ -8,6 +8,7 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const message = location.state?.message;
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -77,14 +78,23 @@ export default function Login() {
         />
 
         {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
+        <div className="flex flex-col gap-3 pb-8">
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
+          >
+            {loading ? "Signing in..." : "Sign in"}
+          </button>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
-        >
-          {loading ? "Signing in..." : "Sign in"}
-        </button>
+          <button
+            type="button"
+            onClick={() => navigate("/register")}
+            className="w-full rounded-lg bg-white px-4 py-3 font-semibold text-black border border-gray-300 hover:bg-gray-100"
+          >
+            Sign Up
+          </button>
+        </div>
       </form>
     </main>
   );
