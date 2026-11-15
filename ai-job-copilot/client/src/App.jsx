@@ -9,6 +9,7 @@ import AnalyzeResume from "./pages/AnalyzeResume/AnalyzeResume";
 import Applications from "./pages/Application/Applications";
 import Analytics from "./pages/Analytics/Analytics";
 import Register from "./pages/Register/Register";
+import CareerAdvisor from "./pages/AiAnalysis/CareerAdvisor";
 
 
 function App() {
@@ -76,7 +77,16 @@ function App() {
           }
         />
 
-        <Route path="/register" element={<Register/>} />
+        <Route
+          path="/career-advisor"
+          element={
+            <ProtectedRoute>
+              <CareerAdvisor />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route path="/register" element={<Register />} />
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>

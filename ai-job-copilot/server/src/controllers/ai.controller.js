@@ -1,5 +1,8 @@
 import prisma from "../config/prisma.js";
-import { analyzeResumeAgainstJob } from "../services/ai.service.js";
+import {
+  analyzeResumeAgainstJob,
+  generateCareerAdvice,
+} from "../services/ai.service.js";
 
 export const analyzeJobApplication = async (req, res) => {
   try {
@@ -183,6 +186,95 @@ export const getUserAnalyses = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Failed to fetch AI analyses",
+    });
+  }
+};
+
+export const getCareerAdvice = async (req, res) => {
+  try {
+    const analyses = await prisma.aIAnalysis.findMany({
+      where: {
+        job: {
+          userId: req.userId,
+        },
+      },
+      include: {
+        job: {
+          select: {
+            title: true,
+            company: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 30,
+    });
+
+    if (!analyses.length) {
+      return res.status(404).json({
+        success: false,
+        message: "Complete at least one AI resume analysis first.",
+      });
+    }
+
+    const advice = await generateCareerAdvice({
+      analyses: analyses.map((item) => ({
+        jobTitle: item.job?.title,
+        company: item.job?.company,
+        matchScore: item.matchScore,
+        matchingSkills: item.result?.matchingSkills || [],
+        missingSkills: item.result?.missingSkills || [],
+        recommendations: item.result?.recommendations || [],
+        weaknesses: item.result?.weaknesses || [],
+      })),
+    });
+
+    // Save generated advice in PostgreSQL
+    const careerPlan = await prisma.careerPlan.create({
+      data: {
+        userId: req.userId,
+        advice,
+      },
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: "Career plan generated and saved successfully",
+      careerPlan,
+    });
+  } catch (error) {
+    console.error("Career advice error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to generate and save career advice",
+    });
+  }
+};
+
+export const getCareerPlans = async (req, res) => {
+  try {
+    const careerPlans = await prisma.careerPlan.findMany({
+      where: {
+        userId: req.userId,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    return res.status(200).json({
+      success: true,
+      careerPlans,
+    });
+  } catch (error) {
+    console.error("Get career plans error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch career plans",
     });
   }
 };

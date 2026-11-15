@@ -24,3 +24,14 @@ export const getAIAnalysesLoggedInUser = async () => {
   return response.data.analyses;
 };
 
+// Generate and save career plan
+export const generateCareerPlan = async () => {
+  const response = await api.post("/ai/career-advice");
+  return response.data.careerPlan;
+};
+
+// Fetch previous career plans
+export const getCareerPlans = async () => {
+  const response = await api.get("/ai/career-plans");
+  return response.data.careerPlans;
+};

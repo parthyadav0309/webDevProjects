@@ -168,12 +168,19 @@ export default function Dashboard() {
           >
             Analytics
           </Link>
-          
+
           <Link
             to="/analyze-resume"
             className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-700"
           >
             Analyze Resume with AI
+          </Link>
+
+          <Link
+            to="/career-advisor"
+            className="block rounded-xl px-4 py-3 text-sm text-gray-700 hover:text-indigo-600 hover:bg-slate-100"
+          >
+            AI Career Advisor
           </Link>
         </nav>
 
