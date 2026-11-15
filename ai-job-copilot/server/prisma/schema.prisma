@@ -36,7 +36,6 @@ model User {
   interviews   Interview[]
   careerPlans CareerPlan[]
 
-  @@index([email])
 }
 
 model Resume {

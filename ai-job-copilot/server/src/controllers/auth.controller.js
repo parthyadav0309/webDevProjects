@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 import prisma from "../config/prisma.js";
+import { Prisma } from "@prisma/client";
 
 export const generateToken = (userId) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET, {
@@ -13,16 +14,44 @@ export const register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    if (!name || !email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: "Name, email and password are required",
-      });
-    }
+   if (
+     typeof name !== "string" ||
+     typeof email !== "string" ||
+     typeof password !== "string"
+   ) {
+     return res.status(400).json({
+       success: false,
+       message: "Invalid registration data",
+     });
+   }
+
+   const normalizedName = name.trim();
+   const normalizedEmail = email.trim().toLowerCase();
+
+   if (!normalizedName || !normalizedEmail || !password) {
+     return res.status(400).json({
+       success: false,
+       message: "All fields are required",
+     });
+   }
+
+   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+     return res.status(400).json({
+       success: false,
+       message: "Invalid email address",
+     });
+   }
+
+   if (password.length < 8) {
+     return res.status(400).json({
+       success: false,
+       message: "Password must contain at least 8 characters",
+     });
+   }
 
     const existingUser = await prisma.user.findUnique({
       where: {
-        email,
+        email:normalizedEmail,
       },
     });
 
@@ -37,14 +66,13 @@ export const register = async (req, res) => {
 
     const user = await prisma.user.create({
       data: {
-        name,
-        email,
+        name:normalizedName,
+        email:normalizedEmail,
         password: hashedPassword,
       },
     });
 
     const token = generateToken(user.id);
-    console.log("Generated token:", token);
 
     res.cookie("token", token, {
       httpOnly: true,
@@ -64,6 +92,15 @@ export const register = async (req, res) => {
       },
     });
   } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      return res.status(409).json({
+        success: false,
+        message: "Email already registered",
+      });
+    }
     console.error("Register error:", error);
 
     res.status(500).json({
