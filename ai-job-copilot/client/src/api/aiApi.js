@@ -1,9 +1,4 @@
-import axios from "axios";
-
-export const api = axios.create({
-  baseURL: "http://localhost:5000/api",
-  withCredentials: true,
-});
+import { api } from "./backendApi";
 
 export const analyzeResume = async (jobId, resumeId) => {
   const response = await api.post("/ai/analyze", {

@@ -1,10 +1,9 @@
-import axios from "axios";
+import { api } from "./backendApi";
 
-const API_URL = "http://localhost:5000/api";
 
 export const postLogin = async (email,password) => {
-  const response = await axios.post(
-    `${API_URL}/auth/login`,
+  const response = await api.post(
+    `/auth/login`,
     { email, password },
     { withCredentials: true },
   );
@@ -14,8 +13,8 @@ export const postLogin = async (email,password) => {
 
 
 export const logout = async ()=>{
-  const response = await axios.post(
-    `${API_URL}/auth/logout`,
+  const response = await api.post(
+    `/auth/logout`,
     {},
     { withCredentials: true },
   );

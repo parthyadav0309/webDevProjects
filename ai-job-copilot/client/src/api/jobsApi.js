@@ -1,10 +1,5 @@
-import axios from "axios";
+import { api } from "./backendApi";
 
-
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-  withCredentials: true,
-});
 
 export const getJobs = async()=>{
     const response = await api.get("jobs");
